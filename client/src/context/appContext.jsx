@@ -8,6 +8,7 @@ export const ProviderContext = ({ children }) => {
     const socket = io(SOCKET_URL);
     const [users, setUsers] = useState([])
     const [messages, setMessages] = useState([])
+    const [messagesMember, setMessagesMember] = useState([])
     const [selectChat, setSelectChat] = useState("")
     return (
         <appContex.Provider value={{
@@ -17,7 +18,9 @@ export const ProviderContext = ({ children }) => {
             messages,
             setMessages,
             selectChat,
-            setSelectChat
+            setSelectChat,
+            messagesMember,
+            setMessagesMember
         }}>
             {children}
         </appContex.Provider>

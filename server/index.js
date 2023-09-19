@@ -82,11 +82,17 @@ io.on("connection", (socket) => {
         })
         socket.emit("new_message", message)
     })
-    socket.on("get_Message", async (from, to) => {
+    socket.on("get_your_Message", async (from, to) => {
         const messages = await Message.find(
             { from, to }
         )
-        socket.emit("get_Message", messages)
+        socket.emit("get_your_Message", messages)
+    })
+    socket.on("get_his_Message", async (from, to) => {
+        const messages = await Message.find(
+            { to, from }
+        )
+        socket.emit("get_his_Message", messages)
     })
 })
 

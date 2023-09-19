@@ -6,7 +6,6 @@ import { useState } from 'react'
 const MessageOne = () => {
     const { socket, selectChat, setMessages } = UseContext()
     const [message, setMessage] = useState("")
-    console.log(selectChat);
     const userId = localStorage.getItem('userId')
     const sendMessage = (event) => {
         event.preventDefault()
@@ -23,11 +22,11 @@ const MessageOne = () => {
             {
                 selectChat ?
                     <div className="h-full flex flex-col justify-between">
-                        <div className='flex-1'>
+                        <div className=''>
                             <MessageFrom />
                         </div>
                         <div>
-                            <form onSubmit={sendMessage} className="flex ">
+                            <form onSubmit={sendMessage} className="flex fixed b">
                                 <button className='bg-white flex items-center px-4'>
                                     <Plus className='w-6 h-6 plusRotate animate-spi' />
                                 </button>
