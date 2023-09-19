@@ -4,9 +4,9 @@ const MessageSchema = new mongoose.Schema
         {
             content: String,
             from: Object,
-            socketId: String,
-            time: String,
-            date: String,
+            // socketId: String,
+            // time: String,
+            // date: String,
             to: String
         },
         {

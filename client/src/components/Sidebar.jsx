@@ -1,39 +1,40 @@
 import { useEffect } from "react"
 import { UseContext } from "../context/appContext"
-import axios from 'axios'
 
 
 const Sidebar = () => {
-    const { socket, members, setMembers, setCurrentRoom, } = UseContext()
+    const { socket, users, setUsers, setSelectChat } = UseContext()
     useEffect(() => {
-        setCurrentRoom("general");
-        getRooms();
-        socket.emit("join-room", "general")
-        socket.emit("new-user")
+        socket.emit("all_users")
+        socket.on("all_users", (users) => {
+            setUsers(users)
+        })
     }, [])
-    socket.on("new-user", (users) => {
-        setMembers(users)
-    })
-    const getRooms = async () => {
-        try {
-            const { data } = await axios.get("/chat/room")
-            console.log(data);
-        } catch (error) {
-            console.error(error);
-        }
-    }
     return (
-        <div>
+        <div className="flex flex-col gap-5 p-2">
             {
-                members.map(
-                    (items) => {
-                        return (
-                            <div key={items._id}>
-                                {items.name}
-                            </div>
-                        )
+                users.map((items) => {
+                    const selectChat = () => {
+                        setSelectChat(items._id)
                     }
-                )}
+                    return (
+                        <button
+                            onClick={selectChat}
+                            key={items._id}>
+                            <div className="flex items-center gap-3">
+                                <div>
+                                    <div className=' w-10 h-10 rounded-full overflow-hidden bg-blue-500 relative'>
+                                        <img src={`http://localhost:8000/${items.image}`} alt="" className="w-10 h-10 object-cover" />
+                                    </div>
+                                </div>
+                                <div>
+                                    {items.name.split(" ")[0]}
+                                </div>
+                            </div>
+                        </button>
+                    )
+                })
+            }
         </div>
     )
 }

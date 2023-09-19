@@ -30,6 +30,8 @@ app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/chat', chatRouter)
 
+//
+app.use(express.static("./upload"))
 
 
 
@@ -40,33 +42,53 @@ const io = new Server(server, {
         credentials: true
     }
 })
-const getLastMessageFromRoom = async (room) => {
-    let roomMessages = await Message.aggregate([
-        { $match: { to: room } },
-        { $group: { _id: '$date', messagesByDate: { $push: '$$ROOT' } } }
-    ])
-    return roomMessages
-}
+
+// const getLastMessageFromRoom = async (room) => {
+//     let roomMessages = await Message.aggregate([
+//         { $match: { to: room } },
+//         { $group: { _id: '$date', messagesByDate: { $push: '$$ROOT' } } }
+//     ])
+//     return roomMessages
+// }
+
+// io.on("connection", (socket) => {
+//     socket.on("new-user", async () => {
+//         const users = await User.find({})
+//         io.emit('new-user', users)
+//     })
+//     socket.on("join-room", async (room) => {
+//         socket.join(room)
+//         let roomMessages = await getLastMessageFromRoom(room)
+//         socket.emit('room-messages', roomMessages)
+//     })
+//     socket.on("message-room", async (room, content, sender, time, date) => {
+//         await Message.create({ content, from: sender, time, date, to: room })
+//         let roomMessages = getLastMessageFromRoom(room);
+//         io.to(room).emit('room-messages', roomMessages);
+//         socket.broadcast.emit("notifications", room)
+//     })
+// })
 
 io.on("connection", (socket) => {
-    socket.on("new-user", async () => {
-        const users = await User.find({})
-        io.emit('new-user', users)
+    socket.on('all_users', async () => {
+        const users = await User.find({});
+        socket.emit("all_users", users)
     })
-    socket.on("join-room", async (room) => {
-        socket.join(room)
-        let roomMessages = await getLastMessageFromRoom(room)
-        socket.emit('room-messages', roomMessages)
+    socket.on("new_message", async (content, from, to) => {
+        const message = await Message.create({
+            content,
+            from,
+            to
+        })
+        socket.emit("new_message", message)
     })
-    socket.on("message-room", async (room, content, sender, time, date) => {
-        await Message.create({ content, from: sender, time, date, to: room })
-        let roomMessages = getLastMessageFromRoom(room);
-        io.to(room).emit('room-messages', roomMessages);
-        socket.broadcast.emit("notifications", room)
+    socket.on("get_Message", async (from, to) => {
+        const messages = await Message.find(
+            { from, to }
+        )
+        socket.emit("get_Message", messages)
     })
 })
-
-
 
 
 

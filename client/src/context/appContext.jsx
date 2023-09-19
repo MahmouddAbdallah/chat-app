@@ -6,20 +6,18 @@ const SOCKET_URL = 'http://localhost:8000'
 const appContex = createContext()
 export const ProviderContext = ({ children }) => {
     const socket = io(SOCKET_URL);
-    const [room, setRoom] = useState([])
-    const [currentRoom, setCurrentRoom] = useState([])
-    const [members, setMembers] = useState([])
+    const [users, setUsers] = useState([])
     const [messages, setMessages] = useState([])
-    const [privateMemberMsg, setPrivateMemberMsg] = useState([])
-    const [newMessage, setNewMessage] = useState([])
+    const [selectChat, setSelectChat] = useState("")
     return (
         <appContex.Provider value={{
-            socket, room, setRoom,
-            currentRoom, setCurrentRoom,
-            members, setMembers,
-            messages, setMessages,
-            privateMemberMsg, setPrivateMemberMsg,
-            newMessage, setNewMessage
+            socket,
+            users,
+            setUsers,
+            messages,
+            setMessages,
+            selectChat,
+            setSelectChat
         }}>
             {children}
         </appContex.Provider>
