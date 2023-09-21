@@ -13,7 +13,7 @@ export default {
         photosColor: "#41B35D",
         happyColor: "#EAB026",
         greenHover: "#36A420",
-        bg: "#F0F2F5",
+        bg: "#F8FAFC",
         inputGray: "#F5F6F7"
       },
       boxShadow: {

@@ -4,7 +4,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: [true, 'username is required'],
     },
-    image: {
+    picture: {
         type: String,
         default: "https://marketplace.canva.com/EAFewoMXU-4/1/0/1600w/canva-purple-pink-gradient-man-3d-avatar-0o0qE2T_kr8.jpg"
     },

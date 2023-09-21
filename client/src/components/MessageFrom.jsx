@@ -18,7 +18,7 @@ const MessageFrom = () => {
         })
     }, [selectChat])
     return (
-        <div className="px-5 overflow-y-scroll h-screen ">
+        <div className="px-5 overflow-y-scroll h-screen  ">
             <div className=" space-y-3">
                 {
                     messages.map((items) => {
