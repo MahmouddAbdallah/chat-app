@@ -1,36 +1,42 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import PropTypes from 'prop-types'
-import { io } from 'socket.io-client';
-const SOCKET_URL = 'http://localhost:8000'
+import io from 'socket.io-client';
+const ENDPOINT = 'http://localhost:8000'
 
 const appContex = createContext()
 export const ProviderContext = ({ children }) => {
-    const socket = io(SOCKET_URL);
-    const [users, setUsers] = useState([])
-    const [messages, setMessages] = useState([])
-    const [messagesMember, setMessagesMember] = useState([])
-    const [selectChat, setSelectChat] = useState("")
-    return (
-        <appContex.Provider value={{
-            socket,
-            users,
-            setUsers,
-            messages,
-            setMessages,
-            selectChat,
-            setSelectChat,
-            messagesMember,
-            setMessagesMember
-        }}>
-            {children}
-        </appContex.Provider>
-    )
+  const [users, setUsers] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [chats, setChats] = useState([]);
+  const [selectChatId, setSelectChatId] = useState("")
+  const user = JSON.parse(localStorage.getItem("user"))
+  const token = localStorage.getItem("token")
+  const socket = io(ENDPOINT);
+
+
+  return (
+    <appContex.Provider value={{
+      socket,
+      token,
+      users,
+      setUsers,
+      user,
+      messages,
+      setMessages,
+      selectChatId,
+      setSelectChatId,
+      chats,
+      setChats,
+    }}>
+      {children}
+    </appContex.Provider>
+  )
 }
 
 ProviderContext.propTypes = {
-    children: PropTypes.element.isRequired
+  children: PropTypes.element.isRequired
 }
 
 export const UseContext = () => {
-    return useContext(appContex)
+  return useContext(appContex)
 }

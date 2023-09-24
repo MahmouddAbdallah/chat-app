@@ -14,7 +14,6 @@ exports.getUsers = async (req, res) => {
     try {
         const ModelQurey = User.find()
         const keyword = req.query.keyword || "";
-        console.log(keyword);
         const search = {}
         if (keyword) {
             search.$or = [

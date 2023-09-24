@@ -5,9 +5,10 @@ const cors = require('cors');
 const authRouter = require("./src/router/authRouter");
 const userRouter = require("./src/router/userRouter");
 const chatRouter = require("./src/router/chatRouter");
+const messageRouter = require("./src/router/messageRouter");
 const connectDB = require('./src/middleware/conntectdb');
 const http = require('http');
-const { Server } = require('socket.io');
+// const { Server } = require('socket.io');
 
 //create app
 const app = express()
@@ -27,28 +28,32 @@ app.use(cors({
 app.use('/auth', authRouter)
 app.use('/user', userRouter)
 app.use('/chat', chatRouter)
+app.use('/message', messageRouter)
 
 //
 app.use(express.static("./upload"))
 
 
 
+//connect db
+connectDB()
+
+//create server and run 
 const server = http.createServer(app)
-const io = new Server(server, {
+const port = process.env.PORT
+server.listen(port, () => {
+    console.log(`server run at ${port}`);
+})
+
+const io = require('socket.io')(server, {
     cors: {
         origin: "http://localhost:5173",
         credentials: true
     }
 })
-
-
-
-
-//connect db
-connectDB()
-
-//run app
-const port = process.env.PORT
-server.listen(port, () => {
-    console.log(`server run at ${port}`);
+io.on("connection", (socket) => {
+    socket.on("userId", userId => {
+        console.log(userId);
+    })
 })
+

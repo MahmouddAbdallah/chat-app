@@ -17,15 +17,19 @@ export default {
         inputGray: "#F5F6F7"
       },
       boxShadow: {
-        input: "0 0 0 2px #e7f3ff"
+        'sm': ' 0px 0px .9px  rgb(0 0 0 / 0.05);',
       },
       fontWeight: {
         "500": "500"
       },
       width: {
         "432": "432px"
-      }
+      },
+
+
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar-hide')
+  ],
 }

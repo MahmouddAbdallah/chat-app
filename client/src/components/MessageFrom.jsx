@@ -1,46 +1,43 @@
-import { useEffect } from "react"
+import axios from "axios";
 import { UseContext } from "../context/appContext"
-
+import { useCallback, useEffect } from "react";
 const MessageFrom = () => {
-    const { socket, messages, setMessages, selectChat, messagesMember,
-        setMessagesMember } = UseContext()
-    const userId = localStorage.getItem('userId')
-
+    const { token, user, messages, setMessages, selectChatId } = UseContext()
+    const getMessages = useCallback(
+        async () => {
+            try {
+                const config = {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+                const { data } = await axios.get(`/message/${selectChatId}`, config)
+                setMessages(data.messages)
+                document.getElementById("chatmessage").scrollTo(0, document.body.scrollHeight);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+        , [selectChatId, setMessages, token])
     useEffect(() => {
-        // (from, to)
-        socket.emit('get_your_Message', userId, selectChat)
-        socket.on("get_your_Message", (messages) => {
-            setMessages(messages)
-        })
-        socket.emit('get_his_Message', selectChat, userId)
-        socket.on("get_his_Message", (messages) => {
-            setMessagesMember(messages)
-        })
-    }, [selectChat])
+        getMessages()
+    }, [getMessages])
+
+
     return (
-        <div className="px-5 overflow-y-scroll h-screen  ">
-            <div className=" space-y-3">
-                {
-                    messages.map((items) => {
-                        return (
-                            <div key={items._id} className=" bg-blue-500 w-fit py-2 px-3 rounded-lg">
-                                {items.content}
-                            </div>
-                        )
-                    })
-                }
-            </div>
-            <div className="space-y-2 flex flex-col items-end ">
-                {
-                    messagesMember.map((items) => {
-                        return (
-                            <div key={items._id} className=" bg-green-500 w-fit py-2 px-3 rounded-lg">
-                                {items.content}
-                            </div>
-                        )
-                    })
-                }
-            </div>
+        <div >
+            {messages.map((item) => {
+                return (
+                    <div key={item._id}>
+                        <div className={`${user._id == item.sender ? "flex justify-end " : "justify-start"} px-1 py-2`}>
+                            <span className={`${user._id == item.sender ? "flex justify-end bg-indigo-500 text-white" : "bg-indigo-50"} px-1 py-2 rounded-md`}>
+                                {item.content}
+                            </span>
+                        </div>
+                    </div>
+                )
+            })}
         </div>
     )
 }

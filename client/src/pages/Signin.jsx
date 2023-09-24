@@ -1,22 +1,17 @@
 import { useState } from "react"
 import axios from 'axios'
-import { UseContext } from "../context/appContext"
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 const Signin = () => {
     const token = localStorage.getItem("token");
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
-    const { socket } = UseContext()
     const navigate = useNavigate()
     const signin = async (e) => {
         try {
             e.preventDefault()
             const { data } = await axios.post('/auth/signin', { password, email })
             localStorage.setItem("token", data.token)
-            localStorage.setItem("userId", data.user._id)
-            //
-            socket.emit('new-user')
-
+            localStorage.setItem("user", JSON.stringify(data.user))
             navigate("/chat")
         } catch (error) {
             console.error(error);

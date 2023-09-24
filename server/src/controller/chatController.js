@@ -19,15 +19,16 @@ exports.accessChat = async (req, res) => {
             if (isChat.length === 1) {
                 res.status(200).json(isChat[0])
             } else {
-                const chat = await Chat.create({
+                let chat = await Chat.create({
                     chatName: "sender",
                     isGroupChat: false,
                     users: [
                         req.user._id,
                         userId
                     ]
-                }).populate({ path: "users", select: "-password -createdAt -updatedAt -__v" })
-                    .populate({ path: "latestMessage" })
+                })
+                chat = await User.populate(chat, { path: "users", select: "-password -createdAt -updatedAt -__v" })
+
                 res.status(201).json(chat)
             }
 
@@ -56,7 +57,7 @@ exports.fetchChats = async (req, res) => {
                     select: "-password -createdAt -updatedAt -__v"
                 })
                 .populate({
-                    path: "latestMessage"
+                    path: "latestMessage", select: " content"
                 })
 
         res.status(201).json(chat)
@@ -70,27 +71,17 @@ exports.createGroupChat = async (req, res) => {
         const { users, name } = req.body
         if (users) {
             if (name) {
-                const isChat = await Chat.find({
+                const user = [...users, req.user._id]
+                let groupChat = await Chat.create({
+                    chatName: name,
                     isGroupChat: true,
-                    users: {
-                        $all: [...new Set([...users])]
-                    }
+                    users: user,
+                    groupAdmin: req.user
                 })
-                    .populate({ path: "users", select: "-password -createdAt -updatedAt -__v" })
-                    .populate({ path: "latestMessage" })
-                if (isChat.length === 1) {
-                    res.status(200).json(...isChat)
-                } else {
-                    let groupChat = await Chat.create({
-                        chatName: name,
-                        isGroupChat: true,
-                        users: users,
-                        groupAdmin: req.user
-                    })
 
-                    groupChat = await groupChat.populate({ path: "users", select: "-password -createdAt -updatedAt -__v" })
-                    res.status(201).json(groupChat)
-                }
+                groupChat = await User.populate(groupChat, { path: "users", select: "-password -createdAt -updatedAt -__v" })
+                res.status(201).json(groupChat)
+
             } else {
                 res.status(400).json({ error: "please add name to group." })
             }

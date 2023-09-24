@@ -18,7 +18,7 @@ const SignUp = () => {
         try {
             e.preventDefault()
             const formData = new FormData()
-            formData.append("image", selectImage)
+            formData.append("picture", selectImage)
             formData.append("name", name)
             formData.append("email", email)
             formData.append("password", password)

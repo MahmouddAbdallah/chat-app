@@ -11,7 +11,7 @@ exports.singup = async (req, res) => {
                     if (!checkEmail) {
                         const user = await User.create({
                             name,
-                            image: req.file.filename,
+                            picture: req.file.filename,
                             password: await bcrypt.hash(password, 10),
                             email
                         })
